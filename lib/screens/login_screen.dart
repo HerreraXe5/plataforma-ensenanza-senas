@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dashboard_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -70,8 +71,10 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        // Aquí luego pondremos la navegación al Dashboard
-                        print("Intentando iniciar sesión...");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                        );
                       },
                       child: const Text(
                         'Iniciar Sesión',
