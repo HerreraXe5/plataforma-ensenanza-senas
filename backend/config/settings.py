@@ -1,4 +1,10 @@
+import os
 from pathlib import Path
+import dj_database_url
+from dotenv import load_dotenv
+
+# Cargar las variables de entorno del archivo .env
+load_dotenv()
 
 # Rutas base
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -16,11 +22,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders', # Para conectar con Flutter
-    'api',         # Nuestra app
+    
+    # Librerías de terceros y API
+    'corsheaders',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'api',
 ]
 
-# Middlewares (CORS debe ir primero)
+# Middlewares (CORS debe ir siempre arriba)
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -52,12 +62,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Base de datos por defecto (SQLite temporal para este sprint)
+# Base de Datos (Conectada a Render)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -78,3 +89,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Permitir a Flutter consumir esta API
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Configuración de Seguridad para el Login (JWT)
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
